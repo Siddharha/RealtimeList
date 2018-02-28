@@ -2,6 +2,7 @@ package in.creativelizard.realtimelist;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private SwipeRefreshLayout swItems;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +42,12 @@ public class MainActivity extends AppCompatActivity {
         initialize();
         setupToolbar();
         loadList();
+
     }
 
+
     private void loadList() {
+        swItems.setRefreshing(true);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -79,16 +84,12 @@ public class MainActivity extends AppCompatActivity {
             arrayList.add(listItem);
 
         }
-
+        swItems.setRefreshing(false);
     }
 
-    private String getDatetime() {
-        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-        String format = s.format(new Date());
-        return format;
-    }
 
     private void initialize() {
+        swItems = findViewById(R.id.swItems);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("todoList");
         arrayList = new ArrayList<>();

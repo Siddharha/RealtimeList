@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,12 +34,12 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.Viewho
         holder.tvContent.setText(arrayList.get(position).getContent());
 
         if(arrayList.get(position).isImportent()) {
-            holder.tvIsImp.setText("Important");
-            holder.tvIsImp.setVisibility(View.VISIBLE);
+            holder.imgImp.setVisibility(View.VISIBLE);
         }else {
-            holder.tvIsImp.setText("");
-            holder.tvIsImp.setVisibility(View.GONE);
+            holder.imgImp.setVisibility(View.GONE);
         }
+
+        holder.tvdtm.setText(arrayList.get(position).getDatetime());
     }
 
     @Override
@@ -47,11 +48,13 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.Viewho
     }
 
     class Viewholder extends RecyclerView.ViewHolder {
-        private TextView tvContent,tvIsImp;
+        private TextView tvContent,tvdtm;
+        private ImageView imgImp;
         public Viewholder(View itemView) {
             super(itemView);
             tvContent = itemView.findViewById(R.id.tvContent);
-            tvIsImp = itemView.findViewById(R.id.tvIsImp);
+            tvdtm = itemView.findViewById(R.id.tvdtm);
+            imgImp = itemView.findViewById(R.id.imgImp);
         }
     }
 }

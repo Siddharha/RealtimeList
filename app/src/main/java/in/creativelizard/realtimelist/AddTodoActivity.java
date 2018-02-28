@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -13,7 +14,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AddTodoActivity extends AppCompatActivity {
 
@@ -22,6 +25,7 @@ public class AddTodoActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private long childIntoList;
+    private CheckBox cbImpt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +65,15 @@ public class AddTodoActivity extends AppCompatActivity {
         ListItem listItem = new ListItem();
         listItem.setId(id);
         listItem.setContent(etContent.getText().toString());
-        listItem.setImportent(true);
-        listItem.setDatetime("");
+        listItem.setImportent(cbImpt.isChecked());
+        listItem.setDatetime(getDatetimeStamp());
         listItem.setImportent(true);
         myRef.child(id).setValue(listItem);
+    }
+
+    private String getDatetimeStamp() {
+        SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        return s.format(new Date());
     }
 
     private void setupToolbar() {
@@ -79,6 +88,7 @@ public class AddTodoActivity extends AppCompatActivity {
         etContent = findViewById(R.id.etContent);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("todoList");
+        cbImpt = findViewById(R.id.cbImpt);
     }
 
     @Override
