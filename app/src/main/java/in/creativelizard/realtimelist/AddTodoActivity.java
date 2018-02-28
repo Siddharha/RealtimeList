@@ -67,7 +67,7 @@ public class AddTodoActivity extends AppCompatActivity {
         listItem.setContent(etContent.getText().toString());
         listItem.setImportent(cbImpt.isChecked());
         listItem.setDatetime(getDatetimeStamp());
-        listItem.setImportent(true);
+        listItem.setImportent(cbImpt.isChecked());
         myRef.child(id).setValue(listItem);
     }
 

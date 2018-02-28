@@ -1,5 +1,6 @@
 package in.creativelizard.realtimelist;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,11 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.Viewho
 
     private ArrayList<ListItem> arrayList;
     private int itemLayout;
-
-    public ItemListAdapter(ArrayList<ListItem> arrayList, int itemLayout) {
+    private Context context;
+    public ItemListAdapter(ArrayList<ListItem> arrayList, int itemLayout, Context context) {
         this.arrayList = arrayList;
         this.itemLayout = itemLayout;
+        this.context = context;
     }
 
     @Override
@@ -50,12 +52,36 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.Viewho
     class Viewholder extends RecyclerView.ViewHolder {
         private TextView tvContent,tvdtm;
         private ImageView imgImp;
+        public View viewForeground;
+
         public Viewholder(View itemView) {
             super(itemView);
             tvContent = itemView.findViewById(R.id.tvContent);
             tvdtm = itemView.findViewById(R.id.tvdtm);
             imgImp = itemView.findViewById(R.id.imgImp);
+            //viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = itemView.findViewById(R.id.view_foreground);
         }
+    }
+
+    public void removeItem(int position) {
+        ((MainActivity)context).removeFromFirebaseDB(arrayList.get(position));
+       /* arrayList.remove(position);
+        // notify the item removed by position
+        // to perform recycler view delete animations
+        // NOTE: don't call notifyDataSetChanged()
+        notifyItemRemoved(position);*/
+
+    }
+
+    public void restoreItem(ListItem item, int position) {
+        arrayList.add(position, item);
+        // notify item added by position
+
+        notifyItemInserted(position);
+    }
+    public void rearrangeListSwipe(){
+        notifyDataSetChanged();
     }
 }
 

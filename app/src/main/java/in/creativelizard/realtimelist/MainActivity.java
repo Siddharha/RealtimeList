@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
 
     private RecyclerView rlItems;
     private Toolbar toolbar;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private SwipeRefreshLayout swItems;
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +85,12 @@ public class MainActivity extends AppCompatActivity {
             listItem.setContent((String) itemX.get("content"));
             listItem.setDatetime((String) itemX.get("datetime"));
             listItem.setImportent((boolean) itemX.get("importent"));
+            listItem.setId((String) itemX.get("id"));
             arrayList.add(listItem);
 
         }
         swItems.setRefreshing(false);
+        swItems.setEnabled(false);
     }
 
 
@@ -98,9 +104,15 @@ public class MainActivity extends AppCompatActivity {
                                                         false);
         rlItems = findViewById(R.id.rlItems);
         toolbar = findViewById(R.id.toolbar);
-        itemListAdapter = new ItemListAdapter(arrayList,R.layout.item_list_cell);
+        itemListAdapter = new ItemListAdapter(arrayList,R.layout.item_list_cell,this);
         rlItems.setLayoutManager(layoutManager);
         rlItems.setAdapter(itemListAdapter);
+        rlItems.setItemAnimator(new DefaultItemAnimator());
+        rlItems.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this,this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rlItems);
+
+
 
     }
 
@@ -125,5 +137,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+
+        itemListAdapter.removeItem(position);
+    }
+
+    public void removeFromFirebaseDB(ListItem item) {
+        myRef.child(item.getId()).removeValue();
     }
 }
