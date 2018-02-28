@@ -59,10 +59,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                     arrayList.clear();
                     collectObjectList((Map<String, ListItem>) dataSnapshot.getValue());
                     itemListAdapter.notifyDataSetChanged();
+
                 }else {
                     arrayList.clear();
                     itemListAdapter.notifyDataSetChanged();
                 }
+
+                swItems.setRefreshing(false);
+                swItems.setEnabled(false);
             }
 
             @Override
@@ -89,8 +93,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             arrayList.add(listItem);
 
         }
-        swItems.setRefreshing(false);
-        swItems.setEnabled(false);
+
     }
 
 
